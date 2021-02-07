@@ -1,0 +1,209 @@
+{
+	"info": {
+		"_postman_id": "f22a0216-efab-41a6-b2dc-7af14dcb48c1",
+		"name": "WorkFlow demo collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Adding new employee",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Function to generate random name string",
+							"function makeid(length) {",
+							"   var result           = '';",
+							"   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';",
+							"   var charactersLength = characters.length;",
+							"   for ( var i = 0; i < length; i++ ) {",
+							"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+							"   }",
+							"   return result;",
+							"}",
+							"",
+							"const firstName = makeid(6);",
+							"const lastName = makeid(6);",
+							"",
+							"pm.environment.set(\"firstName\", firstName );",
+							"pm.environment.set(\"lastName\", lastName );",
+							"",
+							"// Generate random contact number",
+							"pm.environment.set(\"phoneNumber\", Math.random().toString().slice(2,12));",
+							"",
+							"// Generate random salary",
+							"pm.environment.set(\"salary\", Math.random().toString().slice(2,8));",
+							"",
+							"// Generate random age",
+							"pm.environment.set(\"age\", Math.random().toString().slice(2,4));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify that the Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var numberOfEmployees = pm.environment.get(\"employeeCount\");",
+							"",
+							"// Loop to create 100 employee accounts",
+							"if( numberOfEmployees >= 100) {",
+							"    postman.setNextRequest(\"Fetching all employees\");",
+							"} else {",
+							"    numberOfEmployees++;",
+							"    pm.environment.set(\"employeeCount\", numberOfEmployees);",
+							"    postman.setNextRequest(\"Adding new employee\");",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"age\": \"{{age}}\",\n    \"phoneNumber\": \"{{phoneNumber}}\",\n    \"salary\": \"{{salary}}\",\n    \"retired\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/employee/add",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"employee",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetching all employees",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify that the Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Next request",
+							"postman.setNextRequest(\"Retire employees above 60yrs\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/employee/all",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"employee",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retire employees above 60yrs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify that the Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Next request",
+							"postman.setNextRequest(\"Get all retired employee records\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/employee/retire",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"employee",
+						"retire"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all retired employee records",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify that the Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"// reset contact number",
+							"pm.environment.set(\"phoneNumber\", 0);",
+							"",
+							"// reset salary",
+							"pm.environment.set(\"salary\", 0);",
+							"",
+							"// reset  age",
+							"pm.environment.set(\"age\",0);",
+							"",
+							"// reset name",
+							"pm.environment.set(\"firstName\", \"\");",
+							"pm.environment.set(\"lastName\", \"\");",
+							"",
+							"// reset employee count",
+							"pm.environment.set(\"employeeCount\", 0);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/employee/all-retired",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"employee",
+						"all-retired"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -28,11 +28,12 @@ public class EmployeeController {
 
     @PostMapping(
             value = "/add",
-            produces = MediaType.APPLICATION_JSON_VALUE
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public BaseResponseDTO<Employee> getArticleById(@RequestBody AddEmployeeRequest addEmployeeRequest) {
         BaseResponseDTO<Employee> response = new BaseResponseDTO<>();
-        employeeService.addNewEmployee(addEmployeeRequest);
+        response.setData(employeeService.addNewEmployee(addEmployeeRequest));
         return response;
     }
 
@@ -53,7 +54,7 @@ public class EmployeeController {
     )
     public BaseResponseDTO<GetAllEmployeeRecord> getAllRetierdEmployees() {
         BaseResponseDTO<GetAllEmployeeRecord> response = new BaseResponseDTO<>();
-        response.setData(employeeService.getAllEmployees());
+        response.setData(employeeService.fetchAllRetiredEmployeesRecords());
         return response;
     }
 }

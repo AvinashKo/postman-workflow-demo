@@ -22,14 +22,14 @@ public class EmployeeService {
         return allEmployeeRecord;
     }
 
-    public void addNewEmployee(AddEmployeeRequest addEmployeeRequest) {
+    public Employee addNewEmployee(AddEmployeeRequest addEmployeeRequest) {
         Employee employee = new Employee();
         employee.setFirstName(addEmployeeRequest.getFirstName());
         employee.setLastName(addEmployeeRequest.getLastName());
         employee.setAge(addEmployeeRequest.getAge());
         employee.setPhoneNumber(addEmployeeRequest.getPhoneNumber());
         employee.setRetired(addEmployeeRequest.isRetired());
-        employeeRepository.save(employee);
+        return employeeRepository.save(employee);
     }
 
     public GetAllEmployeeRecord retireEmployee() {
@@ -48,7 +48,7 @@ public class EmployeeService {
 
     public GetAllEmployeeRecord fetchAllRetiredEmployeesRecords() {
         GetAllEmployeeRecord getAllEmployeeRecord = new GetAllEmployeeRecord();
-
+        getAllEmployeeRecord.setListOfEmployees(employeeRepository.findByIsRetiredTrue());
         return getAllEmployeeRecord;
     }
 }

@@ -8,4 +8,5 @@ import java.util.List;
 @Data
 public class GetAllEmployeeRecord {
 
-    private List<Employee> listOfEmployees;}
+    private List<Employee> listOfEmployees;
+}
